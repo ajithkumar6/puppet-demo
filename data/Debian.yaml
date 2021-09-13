@@ -1,0 +1,6 @@
+packagename: 'nginx'
+directory_path: '/var/www/tutorial'
+file_path: '/var/www/tutorial/index.html'
+index_source: 'puppet:///modules/nginx/index.html'
+index_path: '/etc/nginx/sites-enabled/tutorial'
+nginx_source: 'puppet:///modules/nginx/tutorial'
