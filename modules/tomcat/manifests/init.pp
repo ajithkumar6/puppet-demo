@@ -8,27 +8,32 @@ before => Package['installing java']
 package {'installing java':
 name => default-jdk,
 ensure => present,
-before => Group['tomcat']
+before => Group['tomcat user']
 }
-group {'tomcat':
+group {'tomcat user':
+name => tomcat,
 ensure => present,
 before => File['creating directory']
 }
 file {'creating directory':
 ensure => directory,
 path => '/opt/tomcat',
+before => File['ttd']
+}
+file {'ttd':
+path => '/opt/tomcat/apache-tomcat-9.0.53.tar.gz',
+ensure => directory,
+source => "puppet:///modules/tomcat/apache-tomcat-9.0.53.tar.gz",
+before => Exec['untar']
+}
+exec {'untar':
+command => '/bin/tar --extract --file apache-tomcat-9.0.53.tar.gz',
+cwd => '/opt/tomcat/',
 before => Exec['adding user']
 }
 exec {'adding user':
 command => "sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat",
-cwd => '/opt/tomcat',
 path => '/usr/bin',
-before => File['/tmp/tomcat/']
-}
-file {'/tmp/tomcat/':
-ensure => present,
-group => tomcat,
-source => "puppet:///modules/tomcat/apache-tomcat-9.0.53.tar.gz",
 before => Exec['sudo commands']
 }
 exec {'sudo commands':
